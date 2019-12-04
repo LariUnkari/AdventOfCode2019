@@ -1,111 +1,163 @@
-#Definitions
-LogLevel = 1
-CoordinateStringFormat = "{0},{1}"
-LineMap = {}
-LineCrossings = []
+"""Advent of Code 2019 - Day 3"""
+
+class Coordinate:
+    """An object that represents a 2D-position on a grid"""
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def manhattan_distance(self):
+        return abs(self.x) + abs(self.y)
+
+    def copy(self):
+        return Coordinate(self.x, self.y)
+
+    def to_string(self):
+        return COORDINATE_STRING_FORMAT.format(self.x, self.y)
 
 class LineInstruction:
-  def __init__(self, lineIndex, direction, length):
-    self.lineIndex = lineIndex
-    self.direction = direction
-    self.length = length
-    if LogLevel >= 2:
-      txt = "[{0}]LineInstruction(dir={1}, len={2})"
-      print(txt.format(lineIndex, direction, length))
+    """An object that contains the necessary information to form a line out of"""
 
-def SetLineAtCoordinate(x, y, doRegisterCrossing, logLevel):
-  coordinate = CoordinateStringFormat.format(x, y)
-  if doRegisterCrossing:
-    if coordinate in LineMap:
-      if LineMap[coordinate] == True:
-        LineCrossings.append(coordinate)
-        if logLevel >= 1:
-          txt = "Lines cross at {0}"
-          print(txt.format(coordinate))
-  else:
-    LineMap[CoordinateStringFormat.format(x, y)] = True
+    def __init__(self, line_index, direction, length):
+        self.line_index = line_index
+        self.direction = direction
+        self.length = length
+        if LOG_LEVEL >= 2:
+            print("[{0}]LineInstruction(dir={1}, len={2})".format(line_index, direction, length))
 
-def DrawLineOnMap(lineInstructions, doRegisterCrossing, logLevel):
-  x = 0
-  y = 0
-  SetLineAtCoordinate(x, y, doRegisterCrossing, logLevel)
-  for instruction in lineInstructions:
-    if instruction.direction == "U":
-      for index in range(instruction.length):
-        y += 1
-        if logLevel >= 2:
-          txt = "Moved up to {0},{1}"
-          print(txt.format(x, y))
-        SetLineAtCoordinate(x, y, doRegisterCrossing, logLevel)
-    elif instruction.direction == "R":
-      for index in range(instruction.length):
-        x += 1
-        if logLevel >= 2:
-          txt = "Moved right to {0},{1}"
-          print(txt.format(x, y))
-        SetLineAtCoordinate(x, y, doRegisterCrossing, logLevel)
-    if instruction.direction == "D":
-      for index in range(instruction.length):
-        y -= 1
-        if logLevel >= 2:
-          txt = "Moved down to {0},{1}"
-          print(txt.format(x, y))
-        SetLineAtCoordinate(x, y, doRegisterCrossing, logLevel)
-    elif instruction.direction == "L":
-      for index in range(instruction.length):
-        x -= 1
-        if logLevel >= 2:
-          txt = "Moved left to {0},{1}"
-          print(txt.format(x, y))
-        SetLineAtCoordinate(x, y, doRegisterCrossing, logLevel)
+    def draw_on_map(self, map_data, coordinate, do_register_crossing):
+        """Runs through line instructions and marks each passed coordinate down.
+        Alternatively checks if a crossing was found and marks that up
+        """
+        if self.direction == "U":
+            for i in range(self.length):
+                coordinate.y += 1
+                if LOG_LEVEL >= 2:
+                    print("Moved up {0}/{1} to {2}".format(i, self.length, coordinate.to_string()))
+                set_line_at_coordinate(map_data, coordinate, do_register_crossing)
+        elif self.direction == "R":
+            for i in range(self.length):
+                coordinate.x += 1
+                if LOG_LEVEL >= 2:
+                    print("Moved right {0}/{1} to {2}".format(i, self.length, coordinate.to_string()))
+                set_line_at_coordinate(map_data, coordinate, do_register_crossing)
+        if self.direction == "D":
+            for i in range(self.length):
+                coordinate.y -= 1
+                if LOG_LEVEL >= 2:
+                    print("Moved down {0}/{1} to {2}".format(i, self.length, coordinate.to_string()))
+                set_line_at_coordinate(map_data, coordinate, do_register_crossing)
+        elif self.direction == "L":
+            for i in range(self.length):
+                coordinate.x -= 1
+                if LOG_LEVEL >= 2:
+                    print("Moved left {0}/{1} to {2}".format(i, self.length, coordinate.to_string()))
+                set_line_at_coordinate(map_data, coordinate, do_register_crossing)
+
+        return coordinate
+
+def set_line_at_coordinate(map_data, coordinate, do_register_crossing):
+    """Marks down that a line passes over a coordinate.
+    Optionally adds a crossing instead if found to exist already
+    """
+
+    cs = coordinate.to_string()
+    if do_register_crossing:
+        if cs in map_data:
+            if LOG_LEVEL >= 1:
+                print("Coordinate {0} exists in map!".format(cs))
+            if map_data[cs]:
+                LINE_CROSSINGS.append(coordinate.copy())
+                if LOG_LEVEL >= 1:
+                    print("Lines cross at {0}".format(cs))
+    else:
+        map_data[coordinate.to_string()] = True
+
 
 #Initialize and read input
 
 
-file = open("input.txt", "r")
-inputs = [ file.readline().split(","), file.readline().split(",") ]
+LOG_LEVEL = 1
 
-lineInstructions = []
-for index in range(len(inputs)):
-  lineInfo = []
+COORDINATE_STRING_FORMAT = "{0},{1}"
 
-  for lineInput in inputs[index]:
-    lineInstruction = LineInstruction(index, lineInput[0], int(lineInput[1:]))
-    lineInfo.append(lineInstruction)
+LINES = []
+LINE_MAP = {}
+LINE_CROSSINGS = []
 
-  lineInstructions.append(lineInfo)
+INPUT_FILE = open("input.txt", "r")
+INPUT_STRINGS = [INPUT_FILE.readline().split(","), INPUT_FILE.readline().split(",")]
+
+#Iterate with index to save index on line instructions
+for index in range(len(INPUT_STRINGS)):
+    line = []
+
+    for line_input in INPUT_STRINGS[index]:
+        line.append(LineInstruction(index, line_input[0], int(line_input[1:])))
+
+    LINES.append(line)
 
 
 #Part 1 of Day 3
 
 
-#Draw the line on map, then register crossing on second line
-DrawLineOnMap(lineInstructions[0], False, LogLevel)
-DrawLineOnMap(lineInstructions[1], True, LogLevel)
+def draw_lines(map_data, line_a, line_b):
+    """Draw lines on map and marks crossings"""
 
-shortestDistance = -1
-nearestCrossingCoordinate = ""
+    #Draw the line on map, then register crossing on second line
+    #No need to register starting point crossings
+    coordinate = Coordinate(0,0)
+    for instruction in line_a:
+        coordinate = instruction.draw_on_map(map_data, coordinate, False)
 
-distance = 0
-splits = ""
-x = 0
-y = 0
-for coordinate in LineCrossings:
-  splits = coordinate.split(",")
-  x = int(splits[0])
-  y = int(splits[1])
+    coordinate = Coordinate(0,0)
+    for instruction in line_b:
+        coordinate = instruction.draw_on_map(map_data, coordinate, True)
 
-  distance = abs(x) + abs(y)
-  if distance <= 0:
-    continue
+def find_nearest_crossing_manhattan(line_crossings):
+    """Seeks the closest line crossing in manhattan distance to origo"""
 
-  if shortestDistance < 0 or distance < shortestDistance:
-    shortestDistance = distance
-    nearestCrossingCoordinate = coordinate
-    if LogLevel >= 1:
-      txt = "New nearest crossing found at {0}, distance {1}"
-      print(txt.format(coordinate, distance))
-   
-if shortestDistance > 0:
-  txt = "Final nearest crossing found at {0}, distance {1}"
-  print(txt.format(nearestCrossingCoordinate, shortestDistance))
+    shortest_manhattan_distance = -1
+    nearest_crossing_coordinate = None
+    distance = 0
+
+    for crossing in line_crossings:
+        distance = crossing.manhattan_distance()
+
+        #Disregard starting position
+        if distance <= 0:
+            continue
+
+      #Check if closer
+        if shortest_manhattan_distance < 0 or distance < shortest_manhattan_distance:
+            shortest_manhattan_distance = distance
+            nearest_crossing_coordinate = crossing
+            if LOG_LEVEL >= 1:
+                print("New nearest crossing candidate found at {0}, distance {1}".format(
+                    crossing.to_string(), distance))
+
+    #Finish and return the answer with coordinate and distance
+    if shortest_manhattan_distance > 0:
+        return (nearest_crossing_coordinate, shortest_manhattan_distance)
+
+    #Nothing found
+    return (None, -1)
+
+
+#Draw first
+draw_lines(LINE_MAP, LINES[0], LINES[1])
+
+#Find the nearest in manhattan distance
+NEAREST_CROSSING = find_nearest_crossing_manhattan(LINE_CROSSINGS)
+if NEAREST_CROSSING[1] > 0:
+    print("Nearest crossing found at {0}, distance {1}".format(
+        NEAREST_CROSSING[0].to_string(), NEAREST_CROSSING[1]))
+
+
+#Part 2 of Day 3
+
+
+#Trace along the lines to all crossings and tally the distance along the line
+#Sum up the line distances to each crossing and find out which one has the
+#Smallest distance sum, that is the answer
