@@ -18,8 +18,13 @@ def validate_digit_group(digit_value, digit_group_length, group_length_min, grou
                 digit_value, digit_group_length, group_length_max))
     elif digit_group_length >= group_length_min:
         if LOG_LEVEL >= 3:
-            print("Digit {0} group count {1} within limits, valid group found!".format(
-                digit_value, digit_group_length, group_length_max))
+            if group_length_max >= 0:
+                print("Digit {0} group count {1} within limits {2}-{3}, valid group found!".format(
+                    digit_value, digit_group_length, group_length_min, group_length_max))
+            else:
+                print("Digit {0} group count {1} exceeded minimum {2}, group disregarded!".format(
+                    digit_value, digit_group_length, group_length_min))
+
         return True
     
     return False
@@ -55,30 +60,33 @@ def get_next_valid_value(number, group_length_min, group_length_max):
                 value += increase
 
                 if LOG_LEVEL >= 3:
-                    print("Digit[{0}] value {1} is less than digit[{2}] value {3}, moved up by {4} to {5}".format(
-                        index, digit, previous_digit_index, previous_digit_value, increase, value))
+                    txt = "Digit[{0}] value {1} is less than digit[{2}] value {3}, moved up by {4} to {5}"
+                    print(txt.format(index, digit, previous_digit_index, previous_digit_value,
+                                    increase, value))
                     
                 digit = previous_digit_value
 
             #If no group has been found yet, check for it
             if not found_digit_group:
-                #If match found, increment group length, or otherwise validate previous group and reset digit group counter
+                #If match found, increment group length
+                #Otherwise validate previous group and reset digit group counter
                 if digit == previous_digit_value:
                     digit_group_length += 1
 
                     if LOG_LEVEL >= 3:
-                        print("Digit[{0}] value {1} is same as digit[{2}] value {3}, group counter at {4}!".format(
-                            index, digit, previous_digit_index, previous_digit_value, digit_group_length))
+                        txt = "Digit[{0}] value {1} is same as digit[{2}] value {3}, group counter at {4}!"
+                        print(txt.format(index, digit, previous_digit_index,
+                                         previous_digit_value, digit_group_length))
                 else:
                     if validate_digit_group(previous_digit_value, digit_group_length, group_length_min, group_length_max):
                         found_digit_group = True
                     else:
                         if LOG_LEVEL >= 3:
-                            print("Digit[{0}] value {1} is not the same as digit[{2}] value {3}, resetting group counter!".format(
-                                index, digit, previous_digit_index, previous_digit_value))
+                            txt = "Digit[{0}] value {1} is not the same as digit[{2}] value {3}, resetting group counter!"
+                            print(txt.format(index, digit, previous_digit_index, previous_digit_value))
 
                         digit_group_length = 1
-                
+
             previous_digit_index = index
             previous_digit_value = digit
 
@@ -86,19 +94,21 @@ def get_next_valid_value(number, group_length_min, group_length_max):
         if not found_digit_group:
             if validate_digit_group(previous_digit_value, digit_group_length, group_length_min, group_length_max):
                 break
-            else:
-                if LOG_LEVEL >= 2:
-                    print("Didn't find a valid digit group in value {0}, going for next number!".format(value))
-                value += 1
+
+            if LOG_LEVEL >= 2:
+                txt = "Didn't find a valid digit group in value {0}, going for next number!"
+                print(txt.format(value))
+            value += 1
 
     return value
 
-def seek_values(value_min, value_max, group_length_min, group_length_max = -1):
+def seek_values(value_min, value_max, group_length_min, group_length_max=-1):
     """Seeks values which adhere to rules and returns the count of valid values."""
 
     #Validate range
     if group_length_min > group_length_max and group_length_max >= 0:
-        print("Invalid group length range given: {0}-{1}".format(group_length_min, group_length_max))
+        print("Invalid group length range given: {0}-{1}".format(
+            group_length_min, group_length_max))
         return 0
 
     if group_length_max >= 0:
@@ -110,17 +120,17 @@ def seek_values(value_min, value_max, group_length_min, group_length_max = -1):
 
     value_count = 0
 
-    next = value_min
-    previous = value_min
-    while next < value_max:
-        next = get_next_valid_value(previous, group_length_min, group_length_max)
+    next_value = value_min
+    previous_value = value_min
+    while next_value < value_max:
+        next_value = get_next_valid_value(previous_value, group_length_min, group_length_max)
 
-        if next <= value_max:
+        if next_value <= value_max:
             if LOG_LEVEL >= 1:
-                print("Value[{0}] is {1}".format(value_count, next))
+                print("Value[{0}] is {1}".format(value_count, next_value))
             value_count += 1
 
-        previous = next
+        previous_value = next_value
 
     return value_count
 
@@ -139,12 +149,12 @@ VALUE_MAX = int(INPUT_STRINGS[1])
 #Part 1 of Day 4
 
 
-count_of_values = seek_values(VALUE_MIN, VALUE_MAX, 2)
-print("Found {0} possible values".format(count_of_values))
+COUNT_VALUES = seek_values(VALUE_MIN, VALUE_MAX, 2)
+print("Found {0} possible values".format(COUNT_VALUES))
 
 
 #Part 2 of Day 4
 
 
-count_of_values = seek_values(VALUE_MIN, VALUE_MAX, 2, 2)
-print("Found {0} possible values".format(count_of_values))
+COUNT_VALUES = seek_values(VALUE_MIN, VALUE_MAX, 2, 2)
+print("Found {0} possible values".format(COUNT_VALUES))
