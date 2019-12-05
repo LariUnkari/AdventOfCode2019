@@ -176,12 +176,12 @@ def increment_distance_to_crossings(map_data, coordinate, *args):
             if crossing.coordinate.x == coordinate.x and crossing.coordinate.y == coordinate.y:
                 crossing.is_distance_calculated = True
 
-def calculate_crossing_distances(map_data, crossing_coordinates, line):
+def calculate_crossing_distances(map_data, crossing_coordinates, line_instructions):
     crossings = []
     for c in crossing_coordinates:
         crossings.append(Crossing(c.copy()))
     coordinate = Coordinate(0,0)
-    for instruction in line:
+    for instruction in line_instructions:
         coordinate = instruction.walk(map_data, coordinate, increment_distance_to_crossings, crossings)
 
     return crossings
@@ -195,23 +195,23 @@ def find_lowest_signal_delay(map_data, line_crossings, lines):
     line_a_crossings = calculate_crossing_distances(map_data, line_crossings, lines[0])
     line_b_crossings = calculate_crossing_distances(map_data, line_crossings, lines[1])
 
-    for index in range(len(line_a_crossings)):
-        total_signal_delays.append(line_a_crossings[index].distance)
+    for i in range(len(line_a_crossings)):
+        total_signal_delays.append(line_a_crossings[i].distance)
         print("Line A crossing at {0} with distance {1}".format(
-            line_a_crossings[index].coordinate.to_string(), line_a_crossings[index].distance))
-    for index in range(len(line_b_crossings)):
-        total_signal_delays[index] += line_b_crossings[index].distance
+            line_a_crossings[i].coordinate.to_string(), line_a_crossings[i].distance))
+    for i in range(len(line_b_crossings)):
+        total_signal_delays[i] += line_b_crossings[i].distance
         print("Line B crossing at {0} with distance {1}".format(
-            line_b_crossings[index].coordinate.to_string(), line_b_crossings[index].distance))
+            line_b_crossings[i].coordinate.to_string(), line_b_crossings[i].distance))
 
     index_of_shortest_delay = -1
     shortest_delay = -1
-    for index in range(len(total_signal_delays)):
-        signal_delay = total_signal_delays[index]
+    for i in range(len(total_signal_delays)):
+        signal_delay = total_signal_delays[i]
         if LOG_LEVEL >= 1:
             print("Signal delay to crossing is {0}".format(signal_delay))
         if index_of_shortest_delay < 0 or signal_delay < shortest_delay:
-            index_of_shortest_delay = index
+            index_of_shortest_delay = i
             shortest_delay = signal_delay
 
     return (index_of_shortest_delay, shortest_delay)
