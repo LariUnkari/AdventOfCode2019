@@ -2,15 +2,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>eb6a7b0a-6e7c-45e0-9f5f-13e8fd97814c</ProjectGuid>
+    <ProjectGuid>e4cb8c40-55cd-4b7f-bf54-137859bab031</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>day3.py</StartupFile>
+    <StartupFile>2019.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>day3</Name>
-    <RootNamespace>day3</RootNamespace>
+    <Name>2019</Name>
+    <RootNamespace>2019</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,10 +22,21 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="2019.py" />
+    <Compile Include="day1.py" />
+    <Compile Include="day2.py" />
     <Compile Include="day3.py" />
+    <Compile Include="day4.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="input.txt" />
+    <Folder Include="data\" />
+    <Folder Include="modules\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\day1input.txt" />
+    <Content Include="data\day2input.txt" />
+    <Content Include="data\day3input.txt" />
+    <Content Include="data\day4input.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
