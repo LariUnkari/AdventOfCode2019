@@ -69,12 +69,14 @@ def action_set_line_at_coordinate(map_data, coordinate, log_level, *args):
 
 def action_check_crossing_at_coordinate(map_data, coordinate, log_level, *args):
     """Checks if a line already passed over a given coordinate."""
+
+    line_crossings = args[0]
     cs = coordinate.to_string()
     if cs in map_data:
         if log_level >= 1:
             print("Coordinate {0} exists in map!".format(cs))
         if map_data[cs]:
-            LINE_CROSSINGS.append(coordinate.copy())
+            line_crossings.append(coordinate.copy())
             if log_level >= 1:
                 print("Lines cross at {0}".format(cs))
 
@@ -90,7 +92,7 @@ def action_increment_distance_to_crossings(map_data, coordinate, log_level, *arg
             if crossing.coordinate.x == coordinate.x and crossing.coordinate.y == coordinate.y:
                 crossing.is_distance_calculated = True
 
-def walk_lines(map_data, line_a, line_b, log_level):
+def walk_lines(map_data, line_a, line_b, line_crossings, log_level):
     """Draw lines on map and marks crossings"""
 
     #Draw the line on map, then register crossing on second line
@@ -101,7 +103,7 @@ def walk_lines(map_data, line_a, line_b, log_level):
 
     coordinate = Coordinate(0,0)
     for instruction in line_b:
-        coordinate = instruction.walk(map_data, coordinate, action_check_crossing_at_coordinate, log_level)
+        coordinate = instruction.walk(map_data, coordinate, action_check_crossing_at_coordinate, log_level, line_crossings)
 
 def calculate_crossing_distances(map_data, crossing_coordinates, line_instructions, log_level):
     crossings = []
@@ -200,7 +202,7 @@ def play(log_level):
 
 
     #Walk the lines
-    walk_lines(LINE_MAP, LINES[0], LINES[1], log_level)
+    walk_lines(LINE_MAP, LINES[0], LINES[1], LINE_CROSSINGS, log_level)
 
     #Find the nearest in manhattan distance
     NEAREST_CROSSING = find_nearest_crossing_manhattan(LINE_CROSSINGS, log_level)

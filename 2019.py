@@ -17,15 +17,15 @@ LOG_LEVEL = 3
 USER_INPUT = get_input()
 while USER_INPUT != "exit":
     if USER_INPUT == "1":
-       day1.play(LOG_LEVEL)
+        day1.play(LOG_LEVEL)
     elif USER_INPUT == "2":
         day2.play(LOG_LEVEL)
     elif USER_INPUT == "3":
         day3.play(LOG_LEVEL)
     elif USER_INPUT == "4":
-       day4.play(LOG_LEVEL)
+        day4.play(LOG_LEVEL)
     elif USER_INPUT == "5":
-       day5.play(LOG_LEVEL)
+        day5.play(LOG_LEVEL)
     else:
         print(f"Unhandled day {USER_INPUT} given!")
         
