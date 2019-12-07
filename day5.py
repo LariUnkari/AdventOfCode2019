@@ -8,8 +8,8 @@ def play(log_level):
     #Initialize and read input
 
 
-    input_file = "3,0,4,0,99" #open("data/day5input.txt", "r")
-    input_strings = input_file.split(",") #input_file.readline().split(",") #Only read first line
+    input_file = open("data/day5input.txt", "r")
+    input_strings = input_file.readline().split(",") #Only read first line
 
     program = []
     for i in input_strings:
@@ -19,7 +19,18 @@ def play(log_level):
     #Part 1 of Day 5
 
 
-    retval = intcode_computer.run(program.copy(), 5, log_level)
+    #Input of 1 for air conditioner TEST run
+    retval = intcode_computer.run(program.copy(), 1, True, log_level)
+    output = retval[1]
+
+    print(f"Output is {output}")
+
+
+    #Part 2 of Day 5
+
+
+    #Input of 8 for radiators TEST run
+    retval = intcode_computer.run(program.copy(), 1, False, log_level)
     output = retval[1]
 
     print(f"Output is {output}")
