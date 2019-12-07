@@ -25,7 +25,7 @@ def calculateFuelRequiredForFuel(fuel):
     return sumOfExtraFuel
 
 
-def play(log_level):
+def play(input_parameter, log_level):
     
 
     #Initialize and read input

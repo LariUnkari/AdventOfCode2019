@@ -135,7 +135,7 @@ def seek_values(value_min, value_max, group_length_min, group_length_max, log_le
     return value_count
 
 
-def play(log_level):
+def play(input_parameter, log_level):
 
 
     #Initialize and read input

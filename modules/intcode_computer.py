@@ -147,10 +147,10 @@ def process_parameters(opcode, position, data, modes, log_level):
 
     return params
 
-def process_instruction(data, position, input, log_level):
+def process_instruction(data, position, input, old_output, log_level):
     """Process intcode program from given position, returns (stop_code, output, position)"""
     
-    output = 0
+    new_output = old_output
 
     instruction = get_opcode_with_params(data[position])
     opcode = instruction[0]
@@ -158,7 +158,7 @@ def process_instruction(data, position, input, log_level):
 
     if stop_code != 0:
         print(f"Halting at position {position}")
-        return (stop_code, output, position) #Stop
+        return (stop_code, new_output, position) #Stop
 
     modes = instruction[1]
 
@@ -178,7 +178,7 @@ def process_instruction(data, position, input, log_level):
     elif opcode == 3:
         op_input(data, params[0], input, log_level)
     elif opcode == 4:
-        output = op_output(params[0], log_level)
+        new_output = op_output(params[0], log_level)
     elif opcode == 5:
         move = op_jump_if_true(position, params[0], params[1], log_level) #Jump overrides move
     elif opcode == 6:
@@ -200,7 +200,7 @@ def process_instruction(data, position, input, log_level):
 
     position += move
         
-    return (stop_code, output, position) #Continue
+    return (stop_code, new_output, position) #Continue
 
 
 #Run commands
@@ -216,7 +216,7 @@ def run(data, input, stop_at_non_zero_output, log_level):
     position = 0
     stop_code = 0
     while stop_code == 0:
-        retval = process_instruction(data, position, input, log_level)
+        retval = process_instruction(data, position, input, output, log_level)
         stop_code = retval[0]
 
         if stop_code == 0:

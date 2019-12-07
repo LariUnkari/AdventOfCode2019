@@ -2,7 +2,13 @@
 from modules import intcode_computer #Wow, we're using module packages now!
 
 
-def play(log_level):
+#Part 1 of Day 5
+def run(program, input_parameter, stop_at_non_zero_output, log_level):
+    retval = intcode_computer.run(program, input_parameter, stop_at_non_zero_output, log_level)
+    return retval[1]
+
+
+def play(input_parameter, log_level):
 
 
     #Initialize and read input
@@ -16,21 +22,14 @@ def play(log_level):
         program.append(int(i))
 
 
-    #Part 1 of Day 5
+    #Run the program
 
 
-    #Input of 1 for air conditioner TEST run
-    retval = intcode_computer.run(program.copy(), 1, True, log_level)
-    output = retval[1]
-
-    print(f"Output is {output}")
-
-
-    #Part 2 of Day 5
-
-
-    #Input of 8 for radiators TEST run
-    retval = intcode_computer.run(program.copy(), 1, False, log_level)
-    output = retval[1]
-
+    output = 0
+    txt = input("Choose part 1 or 2 (defaults to 2): ")
+    if txt == "1":
+        output = run(program.copy(), input_parameter, True, log_level) #Input of 1 for air conditioner TEST run
+    else:
+        output = run(program.copy(), input_parameter, False, log_level)
+        
     print(f"Output is {output}")
