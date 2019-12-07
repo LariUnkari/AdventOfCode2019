@@ -2,7 +2,6 @@
 from modules import intcode_computer #Wow, we're using module packages now!
 
 
-#Part 1 of Day 5
 def run(program, input_parameter, stop_at_non_zero_output, log_level):
     retval = intcode_computer.run(program, input_parameter, stop_at_non_zero_output, log_level)
     return retval[1]

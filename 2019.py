@@ -7,38 +7,18 @@ import day2
 import day3
 import day4
 import day5
+import day6
 
-def get_input():
-    print("""Select day (1-5), then press enter.\nEnter an empty input or 'exit' to end program""")
+
+#Definitions
+
+
+def get_day_input():
+    """Takes in user input for day choice"""
+
+    print(f"Select day (1-{DAY_COUNT}), then press enter.\nEnter an empty input or 'exit' to end program")
+
     return input("Choose the day: ")
-
-def get_module(input_string):
-    """Returns a day solution module if valid, otherwise None"""
-
-    mod = None
-
-    try:
-        value = int(input_string)
-        if value < 1:
-            print(f"Invalid day value {value} given!")
-        elif value > 5:
-            print(f"Day {value} has not been reached yet!")
-        else:
-            print(f"")
-            if value == 1:
-                mod = day1
-            elif value == 2:
-                mod = day2
-            elif value == 3:
-                mod = day3
-            elif value == 4:
-                mod = day4
-            elif value == 5:
-                mod = day5
-    except ValueError:
-        print(f"Invalid input {input_string} given!")
-
-    return mod
 
 
 def get_int_input(prompt, invalid_prompt):
@@ -63,9 +43,45 @@ def get_int_input(prompt, invalid_prompt):
 
     return (is_input_valid, input_value)
 
+def get_module(input_string):
+    """Returns a day solution module if valid, otherwise None"""
+
+    mod = None
+
+    try:
+        value = int(input_string)
+        if value < 1:
+            print(f"Invalid day value {value} given!")
+        elif value > DAY_COUNT:
+            print(f"Day {value} has not been reached yet!")
+        else:
+            print(f"")
+            if value == 1:
+                mod = day1
+            elif value == 2:
+                mod = day2
+            elif value == 3:
+                mod = day3
+            elif value == 4:
+                mod = day4
+            elif value == 5:
+                mod = day5
+            elif value == 6:
+                mod = day6
+    except ValueError:
+        print(f"Invalid input {input_string} given!")
+
+    return mod
+
+
+#Program
+
+
+DAY_COUNT = 6
 USER_INPUT = "0"
+
 while True:
-    USER_INPUT = get_input()
+    USER_INPUT = get_day_input()
     
     if len(USER_INPUT) == 0 or USER_INPUT.strip() == "exit":
         break
