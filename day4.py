@@ -2,7 +2,7 @@
 import math
 
 def get_digit(number, n):
-    """Gets the digit from given number, at index n from left to right"""
+    """Gets the digit from given number, at index n from right to left"""
     return number // 10**n % 10
 
 def get_magnitude(number):
