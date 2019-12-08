@@ -175,7 +175,7 @@ def find_lowest_signal_delay(map_data, line_crossings, lines, log_level):
     return (index_of_shortest_delay, shortest_delay)
 
 
-def play(input_parameter, log_level):
+def play(input_parameters, log_level):
 
 
     #Initialize and read input

@@ -7,7 +7,7 @@ def run(program, input_parameter, stop_at_non_zero_output, log_level):
     return retval[1]
 
 
-def play(input_parameter, log_level):
+def play(input_parameters, log_level):
 
 
     #Initialize and read input
@@ -27,8 +27,8 @@ def play(input_parameter, log_level):
     output = 0
     txt = input("Choose part 1 or 2 (defaults to 2): ")
     if txt == "1":
-        output = run(program.copy(), input_parameter, True, log_level) #Input of 1 for air conditioner TEST run
+        output = run(program.copy(), input_parameters[0], True, log_level) #Input of 1 for air conditioner TEST run
     else:
-        output = run(program.copy(), input_parameter, False, log_level)
+        output = run(program.copy(), input_parameters[0], False, log_level)
         
     print(f"Output is {output}")

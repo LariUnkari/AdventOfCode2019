@@ -25,10 +25,10 @@ def op_mul(data, a, b, target, log_level):
     data[target] = value
 
 def op_input(data, target, value, log_level):
-    """Stores given input value to target position"""
+    """Writes given input value to target position"""
 
     if log_level >= 3:
-        print(f"Store operation, [{target}] = {value}")
+        print(f"Input operation, [{target}] = {value}")
 
     data[target] = value
 
@@ -101,11 +101,13 @@ def is_write_instruction(opcode):
     """Checks given opcode and returns True if it's a write instruction"""
     return (opcode >= 1 and opcode <= 3) or (opcode == 7 or opcode == 8)
 
-def validate_opcode(opcode):
+def validate_opcode(opcode, log_level):
     """Checks given opcode and returns a stop code, where non-zero means it is invalid"""
 
     if opcode == 99:
-        print(f"Stop opcode {opcode}!")
+        if log_level >= 1:
+            print(f"Stop opcode {opcode}!")
+
         return -1
     
     if opcode < 1 or opcode > 8:
@@ -147,18 +149,20 @@ def process_parameters(opcode, position, data, modes, log_level):
 
     return params
 
-def process_instruction(data, position, input, old_output, log_level):
-    """Process intcode program from given position, returns (stop_code, output, position)"""
+def process_instruction(data, position, input_parameters, input_position, old_output, log_level):
+    """Process intcode program from given position, returns (stop_code, output, position, input_position)"""
     
     new_output = old_output
 
     instruction = get_opcode_with_params(data[position])
     opcode = instruction[0]
-    stop_code = validate_opcode(opcode)
+    stop_code = validate_opcode(opcode, log_level)
 
     if stop_code != 0:
-        print(f"Halting at position {position}")
-        return (stop_code, new_output, position) #Stop
+        if log_level >= 1:
+            print(f"Halting at position {position}")
+
+        return (stop_code, new_output, position, input_position) #Stop
 
     modes = instruction[1]
 
@@ -176,7 +180,8 @@ def process_instruction(data, position, input, old_output, log_level):
     elif opcode == 2:
         op_mul(data, params[0], params[1], params[2], log_level)
     elif opcode == 3:
-        op_input(data, params[0], input, log_level)
+        op_input(data, params[0], input_parameters[input_position], log_level)
+        input_position += 1
     elif opcode == 4:
         new_output = op_output(params[0], log_level)
     elif opcode == 5:
@@ -200,37 +205,39 @@ def process_instruction(data, position, input, old_output, log_level):
 
     position += move
         
-    return (stop_code, new_output, position) #Continue
+    return (stop_code, new_output, position, input_position) #Continue
 
 
 #Run commands
 
 
-def run(data, input, stop_at_non_zero_output, log_level):
+def run(data, input_parameters, stop_at_non_zero_output, log_level):
     """Runs intcode program with standard input and returns a tuple (stop_code, output)"""
 
     if log_level >= 1:
-        print(f"Run program with input {input} and data of length {len(data)}!")
+        print(f"Run program with input {input_parameters} and data of length {len(data)}!")
         
     output = 0
     position = 0
+    input_position = 0
     stop_code = 0
     while stop_code == 0:
-        retval = process_instruction(data, position, input, output, log_level)
+        retval = process_instruction(data, position, input_parameters, input_position, output, log_level)
         stop_code = retval[0]
 
         if stop_code == 0:
             output = retval[1]
             position = retval[2]
+            input_position = retval[3]
 
             if stop_at_non_zero_output and output != 0:
-                print("Non-zero output {output} detected, halt!")
+                print(f"Non-zero output {output} detected, halt!")
                 stop_code = 2
                 break
 
             if log_level >= 1:
-                print(f"Moved to position {position}, output is {output}")
-        else:
+                print(f"Moved to position {position}, output is {output}, input position is {input_position}")
+        elif log_level >= 1:
             print(f"Terminating, stop code {stop_code}")
 
     return (stop_code, output)

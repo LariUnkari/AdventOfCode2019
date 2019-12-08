@@ -244,10 +244,12 @@ def visit_link(link, closed_map, log_level):
 
     return new_links
 
+
 #Program
 
     
-def play(input_parameter, log_level):
+def play(input_parameters, log_level):
+    """Program entry point"""
 
 
     #Initialize and read input

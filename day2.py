@@ -52,7 +52,7 @@ def mul(data, posA, posB, target, log_level):
         print(txt.format(posA, data[posA], posB, data[posB], value, target))
 
 
-def play(input_parameter, log_level):
+def play(input_parameters, log_level):
 
 
     #Initialize and read input

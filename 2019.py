@@ -8,6 +8,7 @@ import day3
 import day4
 import day5
 import day6
+import day7
 
 
 #Definitions
@@ -19,6 +20,36 @@ def get_day_input():
     print(f"Select day (1-{DAY_COUNT}), then press enter.\nEnter an empty input or 'exit' to end program")
 
     return input("Choose the day: ")
+
+def get_int_list_input(prompt, invalid_prompt):
+    """Get integer list input from user"""
+
+    input_list = []
+    is_input_valid = False
+
+    while not is_input_valid:
+        is_input_valid = True
+        input_text = input(prompt)
+
+        if len(input_text) == 0:
+            break
+
+        try:
+            for txt in input_text.split(","):
+                input_list.append(int(txt))
+        except ValueError:
+            input_list = []
+            is_input_valid = False
+
+            if invalid_prompt != None:
+                print(invalid_prompt.format(input_text))
+            else:
+                break
+
+    if is_input_valid: #Always return at least a list of a single zero on valid input (can be empty)
+        return (True, input_list if len(input_list) > 0 else [0])
+
+    return (False, [])
 
 
 def get_int_input(prompt, invalid_prompt):
@@ -68,6 +99,8 @@ def get_module(input_string):
                 mod = day5
             elif value == 6:
                 mod = day6
+            elif value == 7:
+                mod = day7
     except ValueError:
         print(f"Invalid input {input_string} given!")
 
@@ -77,7 +110,7 @@ def get_module(input_string):
 #Program
 
 
-DAY_COUNT = 6
+DAY_COUNT = 7
 USER_INPUT = "0"
 
 while True:
@@ -88,11 +121,14 @@ while True:
 
     module = get_module(USER_INPUT)
     if module != None:
-        program_input = get_int_input("Program input: ",
+        #Input is a Tuple of (was_parse_success, list_of_int_values)
+        program_input = get_int_list_input("Program input: ",
             "Invalid input {0}, try again or press enter without input to exit!")
 
         if not program_input[0]:
             break
+
+        print(f"Input value list[0-{len(program_input[1])}]: {program_input[1]}")
 
         log_level_input = get_int_input("Log level (defaults to level zero): ", None)
 
