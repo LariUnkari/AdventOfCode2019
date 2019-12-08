@@ -128,7 +128,7 @@ while True:
         if not program_input[0]:
             break
 
-        print(f"Input value list[0-{len(program_input[1])}]: {program_input[1]}")
+        print(f"Input value list[0-{len(program_input[1])-1}]: {program_input[1]}")
 
         log_level_input = get_int_input("Log level (defaults to level zero): ", None)
 
