@@ -135,14 +135,13 @@ def seek_values(value_min, value_max, group_length_min, group_length_max, log_le
     return value_count
 
 
-def play(input_parameters, log_level):
+def play(input_file, input_parameters, log_level):
 
 
     #Initialize and read input
 
 
-    INPUT_FILE = open("data/day4input.txt", "r")
-    INPUT_STRINGS = INPUT_FILE.readline().split("-")
+    INPUT_STRINGS = input_file.readline().split("-")
 
     VALUE_MIN = int(INPUT_STRINGS[0])
     VALUE_MAX = int(INPUT_STRINGS[1])

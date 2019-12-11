@@ -78,14 +78,13 @@ def part_2():
 #Program
 
     
-def play(input_parameters, log_level):
+def play(input_file, input_parameters, log_level):
     """Program entry point"""
 
 
     #Initialize and read input
 
 
-    input_file = open("data/day7input.txt", "r")
     input_strings = input_file.readline().split(",")
 
     program = []

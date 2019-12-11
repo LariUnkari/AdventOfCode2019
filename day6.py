@@ -248,14 +248,13 @@ def visit_link(link, closed_map, log_level):
 #Program
 
     
-def play(input_parameters, log_level):
+def play(input_file, input_parameters, log_level):
     """Program entry point"""
 
 
     #Initialize and read input
 
 
-    input_file = open("data/day6input.txt", "r")
     input_strings = [line.strip() for line in input_file.readlines()]
     
     body_map = init_map(input_strings, log_level)

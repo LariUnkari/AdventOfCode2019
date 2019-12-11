@@ -9,10 +9,13 @@ import day4
 import day5
 import day6
 import day7
+import day8
 
 
 #Definitions
 
+
+DAY_COUNT = 8
 
 def get_day_input():
     """Takes in user input for day choice"""
@@ -74,19 +77,20 @@ def get_int_input(prompt, invalid_prompt):
 
     return (is_input_valid, input_value)
 
-def get_module(input_string):
-    """Returns a day solution module if valid, otherwise None"""
-
+def get_program_and_input(input_string):
+    """Returns a day solution program and input as tuple (module, input_file). If invalid, returns (None, None)"""
+    
     mod = None
+    filepath = "data/day{0}input.txt"
 
     try:
         value = int(input_string)
+
         if value < 1:
             print(f"Invalid day value {value} given!")
         elif value > DAY_COUNT:
             print(f"Day {value} has not been reached yet!")
         else:
-            print(f"")
             if value == 1:
                 mod = day1
             elif value == 2:
@@ -101,16 +105,18 @@ def get_module(input_string):
                 mod = day6
             elif value == 7:
                 mod = day7
+            elif value == 8:
+                mod = day8
     except ValueError:
         print(f"Invalid input {input_string} given!")
+        return (None, None)
 
-    return mod
+    return (mod, open(filepath.format(value), "r"))
 
 
 #Program
 
 
-DAY_COUNT = 7
 USER_INPUT = "0"
 
 while True:
@@ -119,8 +125,18 @@ while True:
     if len(USER_INPUT) == 0 or USER_INPUT.strip() == "exit":
         break
 
-    module = get_module(USER_INPUT)
-    if module != None:
+    params = get_program_and_input(USER_INPUT)
+    if params != None:
+        module = params[0]
+        if module == None:
+            print(f"No module found for {USER_INPUT}")
+            break
+
+        input_file = params[1]
+        if input_file == None:
+            print(f"No input file found for {USER_INPUT}")
+            break
+
         #Input is a Tuple of (was_parse_success, list_of_int_values)
         program_input = get_int_list_input("Program input: ",
             "Invalid input {0}, try again or press enter without input to exit!")
@@ -132,6 +148,6 @@ while True:
 
         log_level_input = get_int_input("Log level (defaults to level zero): ", None)
 
-        module.play(program_input[1], log_level_input[1] if log_level_input[0] else 0)
+        module.play(params[1], program_input[1], log_level_input[1] if log_level_input[0] else 0)
 
 print("Goodbye and Merry Christmas!")

@@ -52,14 +52,13 @@ def mul(data, posA, posB, target, log_level):
         print(txt.format(posA, data[posA], posB, data[posB], value, target))
 
 
-def play(input_parameters, log_level):
+def play(input_file, input_parameters, log_level):
 
 
     #Initialize and read input
 
 
-    file = open("data/day2input.txt", "r")
-    inputs = file.read().split(",")
+    inputs = input_file.read().split(",")
 
     program = []
     for i in inputs:

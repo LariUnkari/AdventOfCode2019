@@ -175,7 +175,7 @@ def find_lowest_signal_delay(map_data, line_crossings, lines, log_level):
     return (index_of_shortest_delay, shortest_delay)
 
 
-def play(input_parameters, log_level):
+def play(input_file, input_parameters, log_level):
 
 
     #Initialize and read input
@@ -185,8 +185,7 @@ def play(input_parameters, log_level):
     LINE_MAP = {}
     LINE_CROSSINGS = []
 
-    INPUT_FILE = open("data/day3input.txt", "r")
-    INPUT_STRINGS = [INPUT_FILE.readline().split(","), INPUT_FILE.readline().split(",")]
+    INPUT_STRINGS = [input_file.readline().split(","), input_file.readline().split(",")]
 
     #Iterate with index to save index on line instructions
     for index in range(len(INPUT_STRINGS)):

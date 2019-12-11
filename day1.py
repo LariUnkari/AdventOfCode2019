@@ -25,14 +25,13 @@ def calculateFuelRequiredForFuel(fuel):
     return sumOfExtraFuel
 
 
-def play(input_parameters, log_level):
+def play(input_file, input_parameters, log_level):
     
 
     #Initialize and read input
 
 
     print("Day 1 begins!")
-    file = open("data/day1input.txt", "r")
 
 
     #Part 1 of Day 1
@@ -44,7 +43,7 @@ def play(input_parameters, log_level):
 
     fuel = 0
     mass = 0
-    for i in file:
+    for i in input_file:
         mass = int(i)
         fuel = calculateFuelRequiredForMass(int(mass))
         if log_level >= 1:

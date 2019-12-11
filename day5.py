@@ -7,13 +7,12 @@ def run(program, input_parameter, stop_at_non_zero_output, log_level):
     return retval[1]
 
 
-def play(input_parameters, log_level):
+def play(input_file, input_parameters, log_level):
 
 
     #Initialize and read input
 
 
-    input_file = open("data/day5input.txt", "r")
     input_strings = input_file.readline().split(",") #Only read first line
 
     program = []
