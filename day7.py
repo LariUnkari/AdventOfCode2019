@@ -42,7 +42,7 @@ class Amplifier:
             print(f"Run program for amplifier {self.name}, next input: {next_input}")
             
         retval = intcode_computer.run(self.memory, self.code_position,
-                                     self.input_parameters, self.input_position, False, log_level)
+                                     self.input_parameters, self.input_position, 0, False, log_level)
         
         self.stop_code = retval[0]
         self.output = retval[1][0] #First output is the only relevant output

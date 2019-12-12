@@ -11,8 +11,9 @@ from modules import intcode_computer
 def part_1_solution(program, input_parameters, log_level):
     """Returns a code"""
 
-    intcode_computer.run(program, 0, input_parameters, 0, False, log_level)
-
+    retval = intcode_computer.run(program, 0, input_parameters, 0, 0, False, log_level)
+    output = retval[1]
+    print(f"Output is {output}")
 
 #Program
     

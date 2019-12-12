@@ -18,7 +18,7 @@ def get_day_input():
     return input("Choose the day: ")
 
 def get_int_list_input(prompt, invalid_prompt):
-    """Get integer list input from user"""
+    """Get integer list input from user, returns a tuple (is_valid, input_list)"""
 
     input_list = []
     is_input_valid = False
@@ -27,6 +27,7 @@ def get_int_list_input(prompt, invalid_prompt):
         is_input_valid = True
         input_text = input(prompt)
 
+        #Empty input is valid too
         if len(input_text) == 0:
             break
 
@@ -42,10 +43,7 @@ def get_int_list_input(prompt, invalid_prompt):
             else:
                 break
 
-    if is_input_valid: #Always return at least a list of a single zero on valid input (can be empty)
-        return (True, input_list if len(input_list) > 0 else [0])
-
-    return (False, [])
+    return (is_input_valid, input_list)
 
 
 def get_int_input(prompt, invalid_prompt):
@@ -139,7 +137,11 @@ while True:
         if not program_input[0]:
             break
 
-        print(f"Input value list[0-{len(program_input[1])-1}]: {program_input[1]}")
+        input_length = len(program_input)
+        if input_length > 0:
+            print(f"Input value list[0-{input_length-1}]: {program_input[1]}")
+        else:
+            print("No input given")
 
         log_level_input = get_int_input("Log level (defaults to level zero): ", None)
 

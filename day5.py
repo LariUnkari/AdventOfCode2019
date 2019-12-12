@@ -3,7 +3,7 @@ from modules import intcode_computer #Wow, we're using module packages now!
 
 
 def run(program, input_parameter, stop_at_non_zero_output, log_level):
-    retval = intcode_computer.run(program, 0, input_parameter, 0, stop_at_non_zero_output, log_level)
+    retval = intcode_computer.run(program, 0, input_parameter, 0, 0, stop_at_non_zero_output, log_level)
     output_list = retval[1]
     return output_list[len(output_list) - 1] #Last output is the only relevant output
 
