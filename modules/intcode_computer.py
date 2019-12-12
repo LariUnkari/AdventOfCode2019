@@ -152,7 +152,7 @@ def process_parameters(opcode, position, data, modes, log_level):
 def process_instruction(data, position, input_parameters, input_position, old_output, log_level):
     """Process intcode program from given position, returns (stop_code, output, position, input_position)"""
     
-    new_output = old_output
+    new_output = old_output.copy()
 
     instruction = get_opcode_with_params(data[position])
     opcode = instruction[0]
@@ -196,7 +196,7 @@ def process_instruction(data, position, input_parameters, input_position, old_ou
         op_input(data, params[0], input_parameters[input_position], log_level)
         input_position += 1
     elif opcode == 4:
-        new_output = op_output(params[0], log_level)
+        new_output.append(op_output(params[0], log_level))
     elif opcode == 5:
         move = op_jump_if_true(position, params[0], params[1], log_level) #Jump overrides move
     elif opcode == 6:
@@ -226,13 +226,14 @@ def process_instruction(data, position, input_parameters, input_position, old_ou
 
 def run(data, position, input_parameters, input_position, stop_at_non_zero_output, log_level):
     """Runs intcode program with standard input.
-    Returns a tuple (stop_code, output, position, input_position)
+    Returns a tuple (stop_code, output, position, input_position).
+    Output is a list of int values.
     """
     if log_level >= 1:
         print(f"Run program from position {position} with input {input_parameters} from " +
               f"input position {input_position} and data of length {len(data)}!")
         
-    output = 0
+    output = []
     stop_code = 0
     while stop_code == 0:
         retval = process_instruction(data, position, input_parameters, input_position, output, log_level)
@@ -243,10 +244,11 @@ def run(data, position, input_parameters, input_position, stop_at_non_zero_outpu
         input_position = retval[3]
 
         if stop_code == 0:
-            if stop_at_non_zero_output and output != 0:
-                print(f"Non-zero output {output} detected, halt!")
-                stop_code = 2
-                break
+            if stop_at_non_zero_output:
+                if len(output) > 0 and output[len(output) - 1] != 0:
+                    print(f"Non-zero output {output} detected, halt!")
+                    stop_code = 2
+                    break
 
             if log_level >= 1:
                 print(f"Moved to position {position}, output is {output}, input position is {input_position}")
@@ -271,7 +273,7 @@ def run_with_noun_verb(data, noun, verb, finalValuePosition, log_level):
     if log_level >= 1:
         print(f"Run program with noun={noun}, verb={verb}! Final value position is {finalValuePosition}")
 
-    retval = run(data, 0, False, log_level)
+    retval = run(data, 0, [], 0, False, log_level)
     if retval[0] == 0:
         return data[finalValuePosition]
     else:

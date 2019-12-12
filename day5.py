@@ -3,8 +3,9 @@ from modules import intcode_computer #Wow, we're using module packages now!
 
 
 def run(program, input_parameter, stop_at_non_zero_output, log_level):
-    retval = intcode_computer.run(program, input_parameter, stop_at_non_zero_output, log_level)
-    return retval[1]
+    retval = intcode_computer.run(program, 0, input_parameter, 0, stop_at_non_zero_output, log_level)
+    output_list = retval[1]
+    return output_list[len(output_list) - 1] #Last output is the only relevant output
 
 
 def play(input_file, input_parameters, log_level):
@@ -26,8 +27,8 @@ def play(input_file, input_parameters, log_level):
     output = 0
     txt = input("Choose part 1 or 2 (defaults to 2): ")
     if txt == "1":
-        output = run(program.copy(), input_parameters[0], True, log_level) #Input of 1 for air conditioner TEST run
+        output = run(program.copy(), input_parameters, True, log_level) #Input of 1 for air conditioner TEST run
     else:
-        output = run(program.copy(), input_parameters[0], False, log_level)
+        output = run(program.copy(), input_parameters, False, log_level)
         
     print(f"Output is {output}")

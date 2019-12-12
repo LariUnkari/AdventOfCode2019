@@ -35,7 +35,7 @@ class Amplifier:
                   f" input position: {self.input_position}")
 
     def run_program(self, log_level):
-        """Runs program from memory based on saved parameters, returns output value"""
+        """Runs program from memory based on saved parameters, returns an output value"""
         
         if log_level >= 1:
             next_input = self.input_parameters[self.input_position]
@@ -45,7 +45,7 @@ class Amplifier:
                                      self.input_parameters, self.input_position, False, log_level)
         
         self.stop_code = retval[0]
-        self.output = retval[1]
+        self.output = retval[1][0] #First output is the only relevant output
         self.code_position = retval[2]
         self.input_position = retval[3]
 

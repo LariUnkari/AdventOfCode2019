@@ -37,6 +37,9 @@
     <Compile Include="day8.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="day9.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="modules\intcode_computer.py" />
     <Compile Include="modules\__init__.py" />
   </ItemGroup>
