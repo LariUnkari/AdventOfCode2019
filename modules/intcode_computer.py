@@ -55,7 +55,12 @@ def op_jump_if_true(position, value, target, log_level):
     result = target - position if value > 0 else 0
 
     if log_level >= 3:
-        print(f"Jump-if-True operation: position={position}, input={value}, target={target}, result={result}")
+        if value > 0:
+            print(f"Jump-if-True operation: test={value}>0 (True), position={position}, "+
+                 f"target={target}, result={result} ({target}-{position})")
+        else:
+            print(f"Jump-if-True operation: test={value}>0 (False), position={position}, "+
+                 f"target={target}, result=0")
 
     return result
 
@@ -65,7 +70,12 @@ def op_jump_if_false(position, value, target, log_level):
     result = target - position if value == 0 else 0
 
     if log_level >= 3:
-        print(f"Jump-if-False operation: position={position}, input={value}, target={target}, result={result}")
+        if value == 0:
+            print(f"Jump-if-False operation: test={value}==0 (True), position={position}, "+
+                 f"target={target}, result={result} ({target}-{position})")
+        else:
+            print(f"Jump-if-False operation: test={value}==0 (False), position={position}, "+
+                 f"target={target}, result=0")
 
     return result
 
@@ -128,6 +138,9 @@ def get_data_value_at(data, position, log_level):
     if position < 0 or not validate_data_up_to_position(data, position, log_level):
         return (False, 0)
 
+    if log_level >= 4:
+        print(f"Data value at position {position} is {data[position]}")
+
     return (True, data[position])
 
 def get_data_range_at(data, position_from, position_to, log_level):
@@ -139,6 +152,9 @@ def get_data_range_at(data, position_from, position_to, log_level):
     
     if not validate_data_up_to_position(data, position_to, log_level):
         return (False, 0)
+
+    if log_level >= 4:
+        print(f"Data range at position {position_from}:{position_to} is {data[position_from:position_to]}")
 
     return (True, data[position_from:position_to])
 
@@ -199,32 +215,49 @@ def process_parameters(opcode, position, relative_base, data, modes, log_level):
 
     params = retval[1]
 
-    #Write instructions force the last param to be a position, therefore read as is (fake immediate mode)
-    if is_write_instruction(opcode):
-        modes[length - 1] = 1
-
     if log_level >= 2:
         print(f"Before: params[{position}:{position+length}]={params}, modes={modes}")
         
     for i in range(length):
-        mode = modes[i] if i < len(modes) else 0 #Assume 0 for missing mode values
+        #Assume 0 for missing mode values
+        mode = modes[i] if i < len(modes) else 0
+
         if mode == 0:
             #Position mode, get from data at param value position
-            retval = get_data_value_at(data, params[i], log_level)
+            
+            #Last mode in write instructions behaves a bit different
+            if i == length - 1 and is_write_instruction(opcode):
+                #No change to param, use it directly
+                if log_level >= 5:
+                    print(f"Write instruction last parameter forced from position to immediate mode")
+            else:
+                retval = get_data_value_at(data, params[i], log_level)
 
-            if not retval[0]:
-                return []
+                if not retval[0]:
+                    return []
 
-            params[i] = retval[1]
+                params[i] = retval[1]
         elif mode == 2:
             #Relative mode, get from data at param value position offset by relative base
-            print(f"Relative base offset by {relative_base}")
-            retval = get_data_value_at(data, params[i] + relative_base, log_level)
+            
+            if log_level >= 2:
+                print(f"Relative base offset position {params[i]} by {relative_base}")
+                
+            #Last mode in write instructions behaves a bit different
+            if i == length - 1 and is_write_instruction(opcode):
+                #No change to value at param position, use it directly
+                if log_level >= 5:
+                    print(f"Write instruction last parameter forced from \"value at relative position\" "+
+                         f"to \"position value relative to given value\"")
 
-            if not retval[0]:
-                return []
+                params[i] += relative_base
+            else:
+                retval = get_data_value_at(data, params[i] + relative_base, log_level)
 
-            params[i] = retval[1]
+                if not retval[0]:
+                    return []
+
+                params[i] = retval[1]
         #else:
             #Immediate mode, use param directly
             
