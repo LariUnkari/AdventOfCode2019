@@ -2,13 +2,13 @@
 Author: Lari Unkari
 """
 
-import day1, day2, day3, day4, day5, day6, day7, day8, day9
+import day01, day02, day03, day04, day05, day06, day07, day08, day09, day10
 
 
 #Definitions
 
 
-DAY_COUNT = 9
+DAY_COUNT = 10
 
 def get_day_input():
     """Takes in user input for day choice"""
@@ -72,7 +72,7 @@ def get_program_and_input(input_string):
     """Returns a day solution program and input as tuple (module, input_file). If invalid, returns (None, None)"""
     
     mod = None
-    filepath = "data/day{0}input.txt"
+    filepath = "data/day{0:02d}input.txt"
 
     try:
         value = int(input_string)
@@ -83,23 +83,25 @@ def get_program_and_input(input_string):
             print(f"Day {value} has not been reached yet!")
         else:
             if value == 1:
-                mod = day1
+                mod = day01
             elif value == 2:
-                mod = day2
+                mod = day02
             elif value == 3:
-                mod = day3
+                mod = day03
             elif value == 4:
-                mod = day4
+                mod = day04
             elif value == 5:
-                mod = day5
+                mod = day05
             elif value == 6:
-                mod = day6
+                mod = day06
             elif value == 7:
-                mod = day7
+                mod = day07
             elif value == 8:
-                mod = day8
+                mod = day08
             elif value == 9:
-                mod = day9
+                mod = day09
+            elif value == 10:
+                mod = day10
     except ValueError:
         print(f"Invalid input {input_string} given!")
         return (None, None)

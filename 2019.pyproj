@@ -23,21 +23,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="2019.py" />
-    <Compile Include="day1.py" />
-    <Compile Include="day2.py" />
-    <Compile Include="day3.py" />
-    <Compile Include="day4.py" />
-    <Compile Include="day5.py" />
-    <Compile Include="day6.py">
+    <Compile Include="day01.py" />
+    <Compile Include="day02.py" />
+    <Compile Include="day03.py" />
+    <Compile Include="day04.py" />
+    <Compile Include="day05.py" />
+    <Compile Include="day06.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="day7.py">
+    <Compile Include="day07.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="day8.py">
+    <Compile Include="day08.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="day9.py">
+    <Compile Include="day09.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="day10.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="modules\intcode_computer.py" />
@@ -48,15 +51,16 @@
     <Folder Include="modules\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\day1input.txt" />
-    <Content Include="data\day2input.txt" />
-    <Content Include="data\day3input.txt" />
-    <Content Include="data\day4input.txt" />
-    <Content Include="data\day5input.txt" />
-    <Content Include="data\day6input.txt" />
-    <Content Include="data\day7input.txt" />
-    <Content Include="data\day8input.txt" />
-    <Content Include="data\day9input.txt" />
+    <Content Include="data\day01input.txt" />
+    <Content Include="data\day02input.txt" />
+    <Content Include="data\day03input.txt" />
+    <Content Include="data\day04input.txt" />
+    <Content Include="data\day05input.txt" />
+    <Content Include="data\day06input.txt" />
+    <Content Include="data\day07input.txt" />
+    <Content Include="data\day08input.txt" />
+    <Content Include="data\day09input.txt" />
+    <Content Include="data\day10input.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
