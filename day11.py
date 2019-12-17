@@ -38,15 +38,19 @@ def apply_move_to_direction(x, y, direction):
     print("Error, invalid direction {direction} provided!")
     return (x,y)
 
-#Part 1 of Day 11
-
-
 def run(program, input_parameters, map_data, start_position, start_direction, log_level):
-    """Runs the intcode program with given data and starting parameters."""
+    """Runs the intcode program with given data and starting parameters.
+    Returns position information of the final painted area, all values are tuples (x,y):
+    (final_position, corner_top_left, corner_bottom_right)
+    """
 
     position = start_position
     direction = start_direction
     previous_position = position
+
+    x_min, y_min = 0, 0
+    x_max, y_max = 0, 0
+
     current_color = 0
     program_position = 0
     input_position = 0
@@ -59,7 +63,7 @@ def run(program, input_parameters, map_data, start_position, start_direction, lo
         input_parameters.append(current_color)
 
         if log_level >= 1:
-            print(f"Total painted tiles now: {len(map_data)}, panel color at {position} is {current_color}")
+            print(f"Panel color at {position} is {current_color}")
 
         retval = intcode_computer.run(program, program_position, input_parameters,
                                      input_position, relative_base, False, log_level - 1)
@@ -80,40 +84,72 @@ def run(program, input_parameters, map_data, start_position, start_direction, lo
         direction = apply_turn_to_direction(direction, output[1])
         position = apply_move_to_direction(position[0], position[1], direction)
 
+        if position[0] < x_min:
+            x_min = position[0]
+        if position[0] > x_max:
+            x_max = position[0]
+        if position[1] < y_min:
+            y_min = position[1]
+        if position[1] > y_max:
+            y_max = position[1]
+
         if log_level >= 1:
             print(f"Painted {output[0]} at {previous_position}, turned {output[1]}, " +
                   f"moved to direction {direction}, position now {position}.")
-
+            print(f"Total painted tiles now: {len(map_data)}, area dimensions: {x_max-x_min}x{y_max-y_min}")
+            
     print(f"Finished painting at position {position}, painted over {len(map_data)} tiles in total")
+    return (position, (x_min, y_min), (x_max, y_max))
 
-def get_int_list_input(prompt, invalid_prompt):
-    """Get integer list input from user, returns a tuple (is_valid, input_list)"""
 
-    input_list = []
-    is_input_valid = False
+#Part 1 of Day 11
 
-    while not is_input_valid:
-        is_input_valid = True
-        input_text = input(prompt)
 
-        #Empty input is valid too
-        if len(input_text) == 0:
-            break
+def part_1(program, log_level):
+    """Runs the program on empty data."""
 
-        try:
-            for txt in input_text.split(","):
-                input_list.append(int(txt))
-        except ValueError:
-            input_list = []
-            is_input_valid = False
+    run(program, [], {}, (0,0), DIR_UP, log_level)
 
-            if invalid_prompt != None:
-                print(invalid_prompt.format(input_text))
-            else:
-                break
 
-    return (is_input_valid, input_list)
+#Part 2 of Day 11
 
+
+def part_2(program, log_level):
+    """Runs the program on data with a single white tile at start position."""
+
+    map_data = {}
+    position = (0,0)
+    map_data[position] = 1 #White at origo
+
+    retval = run(program, [], map_data, position, DIR_UP, log_level)
+
+    #Draw a picture with the data
+
+    corner_top_left = retval[1]
+    corner_bottom_right = retval[2]
+
+    width = 1 + corner_bottom_right[0] - corner_top_left[0]
+    height = 1 + corner_bottom_right[1] - corner_top_left[1]
+
+    print(f"Printing image of dimensions {width}x{height}, offset {corner_top_left}")
+
+    #Format image with zeros
+    image_data = [i * 0 for i in range(1 + width * height)]
+
+    #Draw all positions from map
+    index = 0
+    for pos in map_data:
+        position = (pos[0] - corner_top_left[0], pos[1] - corner_top_left[1])
+        index = position[1] * width + position[0]
+        image_data[index] = map_data[pos]
+
+    line = ""
+    for y in reversed(range(height)):
+        index = y * width
+        for pixel in image_data[index:index+width]:
+            line += '#' if pixel == 1 else ' '
+        print(line)
+        line = ""
 
 #Program
 
@@ -131,11 +167,12 @@ def play(input_file, input_parameters, log_level):
     for i in input_strings:
         program.append(int(i))
 
-    map_data = {}
-    start_position = (0,0)
-
 
     #Run the program
 
     
-    run(program.copy(), input_parameters, map_data, start_position, DIR_UP, log_level)
+    user_input = input("Choose part 1 or 2 solution (defaults to 2): ")
+    if user_input == "1":
+        part_1(program.copy(), log_level)
+    else:
+        part_2(program.copy(), log_level)
