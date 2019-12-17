@@ -2,13 +2,13 @@
 Author: Lari Unkari
 """
 
-import day01, day02, day03, day04, day05, day06, day07, day08, day09, day10
+import day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11
 
 
 #Definitions
 
 
-DAY_COUNT = 10
+DAY_COUNT = 11
 
 def get_day_input():
     """Takes in user input for day choice"""
@@ -102,6 +102,8 @@ def get_program_and_input(input_string):
                 mod = day09
             elif value == 10:
                 mod = day10
+            elif value == 11:
+                mod = day11
     except ValueError:
         print(f"Invalid input {input_string} given!")
         return (None, None)
