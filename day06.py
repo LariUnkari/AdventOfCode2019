@@ -263,7 +263,6 @@ def play(input_file, input_parameters, log_level):
     #Run the program
 
 
-    output = 0
     txt = input("Choose part 1 or 2 (defaults to 2): ")
     if txt == "1":
         part_1(body_map, log_level)
